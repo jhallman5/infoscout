@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from model import generate_retailer_data, generate_percent_sales_table, retailer_affinity, count_hhs, generate_user_data, filter_user_data
+from model import generate_retailer_data, generate_percent_sales_table, retailer_affinity, count_hhs, generate_user_data, filter_user_data, top_buying_brand
 import requests
 import pandas as pd
 import matplotlib
@@ -33,6 +33,11 @@ def find_affinity():
 def HHcount():
     count_hhs()
     return "Hello Thur"
+
+@app.route("/TopBuying")
+def Top():
+    top_buying_brand()
+    return "Hello Thurrr"
 
 if __name__ == '__main__':
     app.run(debug=True)
