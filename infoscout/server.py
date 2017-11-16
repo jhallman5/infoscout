@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from model import generate_retailer_data, generate_percent_sales_table, retailer_affinity
+from model import generate_retailer_data, generate_percent_sales_table, retailer_affinity, count_hhs, generate_user_data, filter_user_data
 import requests
 import pandas as pd
 import matplotlib
@@ -23,18 +23,16 @@ def goodbye():
 def goodbye2():
     data = generate_retailer_data()
     df = pd.DataFrame(data)
-    for column in df:
-        new_df = df.agg(column).apply(lambda x: percentages(x, df[column]))
-        df.update(new_df)
-    return render_template('template.html',tables=[df.to_html()], titles = ['na', 'Percent Sales'])
+    return render_template('template.html',tables=[df.to_html()], titles = ['na', 'Total Sales'])
 
 @app.route("/affinity3")
 def find_affinity():
     return retailer_affinity('Monster')
 
-def percentages(item, retailer):
-     interFloat =  100 * item /float(retailer.sum())
-     return round(interFloat, 2)
+@app.route("/HHcount")
+def HHcount():
+    count_hhs()
+    return "Hello Thur"
 
 if __name__ == '__main__':
     app.run(debug=True)
