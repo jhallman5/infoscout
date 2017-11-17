@@ -1,6 +1,6 @@
 import requests
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, date
 
 def generate_retailer_data():
     """Returns the number of sales for each retailer per brand."""
@@ -42,13 +42,14 @@ def filter_user_data(item, options):
         if item['retailer'] != options['retailer']:
             return False
     if options.get('start_date'):
-        start_date = datetime.strptime(options['start_date'], '%m/%d/%Y')
+        start_date = datetime.strptime(options['start_date'], '%Y-%m-%d')
         item['date'] = datetime.strptime(item['date'], '%m/%d/%Y')
         if item['date'] < start_date:
             return False
     if options.get('end_date'):
-        end_date = datetime.strptime(options['end_date'], '%m/%d/%Y')
-        item['date'] = datetime.strptime(item['date'], '%m/%d/%Y')
+        end_date = datetime.strptime(options['end_date'], '%Y-%m-%d')
+        if not isinstance(item['date'], date):
+            item['date'] = datetime.strptime(item['date'], '%m/%d/%Y')
         if item['date'] > end_date:
             return False
     return True
@@ -68,6 +69,7 @@ def count_hhs(brand=None, retailer=None, start_date=None, end_date=None, AWSjson
         'start_date': start_date,
         'end_date': end_date
         }
+    print(options)
     return number_of_users(options, AWSjson)
 
 def top_buying_brand():

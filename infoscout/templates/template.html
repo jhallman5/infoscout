@@ -9,5 +9,36 @@
       <h2>{{titles[loop.index]}}</h2>
       {{ table|safe }}
     {% endfor %}
+    <h2>2) Find the the number of Households.</h2>
+    <form action="/HHcount" method="Post">
+      <select name=brand>
+        <option value=''>Brand</option>
+        <option value="Monster">Monster</option>
+        <option value="Red Bull">Red Bull</option>
+        <option value="5 hour Energy">5 hour Energy</option>
+        <option value="Rockstar">Rockstar</option>
+      </select>
+      <select name=retailer>
+        <option value=''>Retailer</option>
+        <option value="CVS">CVS</option>
+        <option value="Walmart">Walmart</option>
+        <option value="Publix">Publix</option>
+        <option value="Costco">Costco</option>
+        <option value="Safeway">Safeway</option>
+        <option value="Target">Target</option>
+        <option value="Walgreens">Walgreens</option>
+        <option value="Kroger">Kroger</option>
+      </select>
+      Start Date: <input name="start_date" type="date" />
+      End Date: <input name="end_date" type="date" />
+      <input type="submit" value="Submit"/>
+    </form>
+    <br />
+    <div>
+      Households: {% if results %} {{ results }} {% endif %}
+    </div>
+    <h2>3) Identify brand with top buying rate ($ spent / HH)</h2>
+    <a href="/TopBuying"><button>Find out!</button></a>
+    {% if top_brand %} It's {{ top_brand }}! {% endif %}
   </body>
 </html>
