@@ -15,18 +15,10 @@ def root():
 def percent_sales_table():
     data = generate_retailer_data()
     df = generate_percent_sales_table(data)
-    return render_template('template.html',table=df.to_html())
-
-@app.route("/affinity2")
-def total_sales_table():
-    data = generate_retailer_data()
-    df = pd.DataFrame(data)
-    return render_template('template.html',tables=[df.to_html()], titles = ['na', 'Total Sales'])
-
-@app.route("/affinity3")
-def find_affinity():
-    return retailer_affinity('Monster')
-
+    RA = None
+    if len(request.form.get('brand')):
+        RA = retailer_affinity(request.form.get('brand'))
+    return render_template('template.html',table=df.to_html(), affinity=RA)
 @app.route("/HHcount", methods = [ 'POST' ])
 def HHcount():
     brand = None
@@ -48,7 +40,6 @@ def HHcount():
 def top_brand():
     top_brand =  top_buying_brand()
     return render_template('template.html', top_brand = top_brand)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
