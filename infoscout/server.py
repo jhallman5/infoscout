@@ -11,11 +11,11 @@ app=Flask(__name__)
 def root():
     return render_template('template.html')
 
-@app.route("/affinity")
+@app.route("/affinity", methods = [ 'POST' ])
 def percent_sales_table():
     data = generate_retailer_data()
     df = generate_percent_sales_table(data)
-    return render_template('template.html',tables=[df.to_html()], titles = ['na', 'Percent Sales'])
+    return render_template('template.html',table=df.to_html())
 
 @app.route("/affinity2")
 def total_sales_table():

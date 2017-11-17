@@ -5,11 +5,22 @@
     <title></title>
   </head>
   <body>
-    {% for table in tables %}
-      <h2>{{titles[loop.index]}}</h2>
+    <h2>1) Retailer Affinity:</h2>
+    <form action="/affinity" method="Post">
+      <select name=brand>
+        <option value=''>Brand</option>
+        <option value="Monster">Monster</option>
+        <option value="Red Bull">Red Bull</option>
+        <option value="5 hour Energy">5 hour Energy</option>
+        <option value="Rockstar">Rockstar</option>
+      </select>
+      <input type="submit" value="Submit"/>
+    </form>
+    {% if table %}
+      <h2>Percent Sales</h2>
       {{ table|safe }}
-    {% endfor %}
-    <h2>2) Find the the number of Households.</h2>
+    {% endif %}
+    <h2>2) Find the the number of Households:</h2>
     <form action="/HHcount" method="Post">
       <select name=brand>
         <option value=''>Brand</option>
@@ -37,8 +48,12 @@
     <div>
       Households: {% if results %} {{ results }} {% endif %}
     </div>
-    <h2>3) Identify brand with top buying rate ($ spent / HH)</h2>
-    <a href="/TopBuying"><button>Find out!</button></a>
-    {% if top_brand %} It's {{ top_brand }}! {% endif %}
+    <h2>3) Identify brand with top buying rate ($ spent / HH):</h2>
+    The brand with the top buying rate is
+      {% if top_brand %}
+        {{ top_brand }}!
+      {% else %}
+        <a href="/TopBuying"><button>Find out!</button></a>
+      {% endif %}
   </body>
 </html>
