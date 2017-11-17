@@ -2,15 +2,21 @@ import requests
 import pandas as pd
 from datetime import datetime, date
 
+def retailer_affinity(focus_brand):
+    """Returns the strongest retailer affinity given a brand."""
+    data = generate_retailer_data()
+    df = generate_percent_sales_table(data)
+    return df.ix[focus_brand].idxmax(axis=1)
+
 def generate_retailer_data():
     """Returns the number of sales for each retailer per brand."""
     AWSjson = requests.get('https://s3.amazonaws.com/isc-isc/trips_gdrive.json').json()
     retailers = {item['retailer']: {} for item in AWSjson}
     for item in AWSjson:
-        if retailers[item['retailer']].get(item["brand"]):
-            retailers[item['retailer']][item["brand"]] += int(item["qty"])
+        if retailers[item['retailer']].get(item['brand']):
+            retailers[item['retailer']][item['brand']] += int(item['qty'])
         else:
-            retailers[item['retailer']][item["brand"]] = int(item["qty"])
+            retailers[item['retailer']][item['brand']] = int(item['qty'])
     return retailers
 
 def generate_percent_sales_table(retailerData):
@@ -25,6 +31,16 @@ def percent_convertion(item, retailer):
     """Generates percentage of item sales per retailer."""
     percentSales =  100 * item /int(retailer.sum())
     return round(percentSales, 2)
+
+def count_hhs(brand=None, retailer=None, start_date=None, end_date=None, AWSjson=None):
+    """A function that returns the number of households allowing for a dynamic optional set of inputs."""
+    options = {
+        'brand': brand,
+        'retailer': retailer,
+        'start_date': start_date,
+        'end_date': end_date
+        }
+    return number_of_users(options, AWSjson)
 
 def number_of_users(options, AWSjson):
     """Returns number of users, applies filters if necessary."""
@@ -53,24 +69,6 @@ def filter_user_data(item, options):
         if item['date'] > end_date:
             return False
     return True
-
-# Function solutions
-def retailer_affinity(focus_brand):
-    """Returns the strongest retailer affinity relative to other brands."""
-    data = generate_retailer_data()
-    df = generate_percent_sales_table(data)
-    return df.ix[focus_brand].idxmax(axis=1)
-
-def count_hhs(brand=None, retailer=None, start_date=None, end_date=None, AWSjson=None):
-    """A function that returns the number of households allowing for a dynamic optional set of inputs."""
-    options = {
-        'brand': brand,
-        'retailer': retailer,
-        'start_date': start_date,
-        'end_date': end_date
-        }
-    print(options)
-    return number_of_users(options, AWSjson)
 
 def top_buying_brand():
     """Identify brand with top buying rate ($ spent / HH)."""

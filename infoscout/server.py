@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template
 from model import generate_retailer_data, generate_percent_sales_table, retailer_affinity, count_hhs, top_buying_brand
-import pandas as pd
 import matplotlib
 
 matplotlib.use('TkAgg')
@@ -13,14 +12,17 @@ def root():
 
 @app.route("/affinity", methods = [ 'POST' ])
 def percent_sales_table():
+    """Returns the template.html with the retailer affinity."""
     data = generate_retailer_data()
     df = generate_percent_sales_table(data)
-    RA = None
+    affinity = None
     if len(request.form.get('brand')):
-        RA = retailer_affinity(request.form.get('brand'))
-    return render_template('template.html',table=df.to_html(), affinity=RA)
+        affinity = retailer_affinity(request.form.get('brand'))
+    return render_template('template.html',table=df.to_html(), affinity=affinity, retailer_data=data)
+
 @app.route("/HHcount", methods = [ 'POST' ])
 def HHcount():
+    """Returns the template.html with the specified household count."""
     brand = None
     retailer = None
     start_date = None
@@ -38,6 +40,7 @@ def HHcount():
 
 @app.route("/TopBuying")
 def top_brand():
+    """Returns the template.html with the top buying brand."""
     top_brand =  top_buying_brand()
     return render_template('template.html', top_brand = top_brand)
 
