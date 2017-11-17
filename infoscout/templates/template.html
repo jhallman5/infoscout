@@ -2,12 +2,64 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>John Hallman's Submission</title>
   </head>
   <body>
-    {% for table in tables %}
-      <h2>{{titles[loop.index]}}</h2>
+    <h1>John Hallman's Coding Exercise</h1>
+    <h2>1) Retailer Affinity:</h2>
+    <h4>Find the highest retailer affinity based on brand.</h4>
+    <form action="/affinity" method="POST">
+      <select name="brand">
+        <option value=''>Brand</option>
+        <option value="Monster">Monster</option>
+        <option value="Red Bull">Red Bull</option>
+        <option value="5 Hour Energy">5 Hour Energy</option>
+        <option value="Rockstar">Rockstar</option>
+      </select>
+      <input type="submit" value="Submit"/>
+    </form>
+    {% if table %}
+      <h2>Percent Sales</h2>
       {{ table|safe }}
-    {% endfor %}
+    {% endif %}
+    <br />
+    {% if affinity %}
+        The retailer with the highest affinity is {{affinity}}.
+    {% endif %}
+    <h2>2) Find the the number of Households:</h2>
+    <h4>Find the number of households given a dynamic set of inputs.</h4>
+    <form action="/HHcount" method="POST">
+      <select name="brand">
+        <option value=''>Brand</option>
+        <option value="Monster">Monster</option>
+        <option value="Red Bull">Red Bull</option>
+        <option value="5 Hour Energy">5 Hour Energy</option>
+        <option value="Rockstar">Rockstar</option>
+      </select>
+      <select name="retailer">
+        <option value=''>Retailer</option>
+        <option value="CVS">CVS</option>
+        <option value="Walmart">Walmart</option>
+        <option value="Publix">Publix</option>
+        <option value="Costco">Costco</option>
+        <option value="Safeway">Safeway</option>
+        <option value="Target">Target</option>
+        <option value="Walgreens">Walgreens</option>
+        <option value="Kroger">Kroger</option>
+      </select>
+      Start Date: <input name="start_date" type="date" />
+      End Date: <input name="end_date" type="date" />
+      <input type="submit" value="Submit"/>
+    </form>
+    <br />
+      {% if results %} The number of households for your search is: {{ results }} {% endif %}
+    <h2>3) Identify brand with top buying rate ($ spent / HH):</h2>
+    <h4>Find which brand has the top buying rate per household.</h4>
+    The brand with the top buying rate is
+      {% if top_brand %}
+        {{ top_brand }}!
+      {% else %}
+        <a href="/TopBuying"><button>Find out!</button></a>
+      {% endif %}
   </body>
 </html>
