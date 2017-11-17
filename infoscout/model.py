@@ -7,7 +7,7 @@ def generate_retailer_data():
     AWSjson = requests.get('https://s3.amazonaws.com/isc-isc/trips_gdrive.json').json()
     retailers = {item['retailer']: {} for item in AWSjson}
     for item in AWSjson:
-        if(retailers[item['retailer']].get(item["brand"], None)):
+        if retailers[item['retailer']].get(item["brand"]):
             retailers[item['retailer']][item["brand"]] += int(item["qty"])
         else:
             retailers[item['retailer']][item["brand"]] = int(item["qty"])
@@ -17,17 +17,17 @@ def generate_percent_sales_table(retailerData):
     """Returns a sales percentages dataframe per brand and retailer."""
     df = pd.DataFrame(retailerData)
     for column in df:
-        new_df = df.agg(column).apply(lambda x: percentages(x, df[column]))
+        new_df = df.agg(column).apply(lambda x: percent_convertion(x, df[column]))
         df.update(new_df)
     return df
 
-def percentages(item, retailer):
+def percent_convertion(item, retailer):
     """Generates percentage of item sales per retailer."""
-    interFloat =  100 * item /float(retailer.sum())
-    return round(interFloat, 2)
+    percentSales =  100 * item /int(retailer.sum())
+    return round(percentSales, 2)
 
-def generate_user_data(options, AWSjson):
-    """Returns length of users, applies filters if necessary."""
+def number_of_users(options, AWSjson):
+    """Returns number of users, applies filters if necessary."""
     if not AWSjson:
         AWSjson = requests.get('https://s3.amazonaws.com/isc-isc/trips_gdrive.json').json()
     users = {item['userId'] for item in AWSjson if filter_user_data(item, options)}
@@ -68,7 +68,7 @@ def count_hhs(brand=None, retailer=None, start_date=None, end_date=None, AWSjson
         'start_date': start_date,
         'end_date': end_date
         }
-    return generate_user_data(options, AWSjson)
+    return number_of_users(options, AWSjson)
 
 def top_buying_brand():
     """Identify brand with top buying rate ($ spent / HH)."""
